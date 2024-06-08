@@ -1,25 +1,12 @@
-\documentclass[UTF8]{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[normalem]{ulem}
-\usepackage{xeCJK}
-\usepackage{
-    amsmath, amssymb, listings, hyperref,
-    subcaption, float, booktabs, csquotes,
-    enumitem, tikz, pgf, pgfplots, cancel,
-    ulem, fancyhdr, framed, amsthm, mathtools,
-    ifsym
-}
+\input{./preamble.tex}
 
-\setCJKmainfont[BoldFont=Songti SC Bold]{Songti SC Regular}
-\setCJKsansfont{Heiti SC}
-\setCJKmonofont{Courier}
-
-\newcommand{\figc}[2]{
-\begin{figure}[H]\begin{center}
-    #1
-    \caption{#2}
-\end{center}\end{figure}
-}
+\pgfplotsset{every axis/.append style={
+                    axis x line=middle,    % put the x axis in the middle
+                    axis y line=middle,    % put the y axis in the middle
+                    axis line style={->}, % arrows on the axis
+                    xlabel={$x$},          % default put x on x-axis
+                    ylabel={$y$},          % default put y on y-axis
+                    }}
 
 \usefonttheme{serif}
 \title{\bf Kolmogorov-Arnold Networks}
@@ -32,12 +19,189 @@
 \frame{\titlepage}
 
 \begin{frame}
-    \center{test}
-    \center{你好}
-\end{frame}
-\begin{frame}
-    大家好
+    \center{\textbf{
+        Welcome to the inaugural Sim-Eval literature review!
+    }}
+    \center{
+        I'm trying to keep this informal -- teaching is the best way of learning,
+        and we all benefit from sharing knowledge. 
+    }
+    \center{
+        My background is in math, so expect a bit more of the underlying theory here!
+    }
 \end{frame}
 
+\begin{frame}
+    \textbf{Agenda:}
+    \begin{itemize}
+        \item What's a KAN (and what's an MLP)?
+        \item What can a KAN represent?
+        \item Why are KANs interesting?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    Some bookkeeping notes:
+    \begin{itemize}
+        \item For simplicity, assume that the functions we care about are
+            \textit{scalar-valued} and \textit{of multiple variables}, i.e. 
+            \[
+                f: \R^n \longrightarrow \R
+            \]
+        \item Parts of this are intentionally abstract, so as to not get
+            into the weeds of technical examples. Expect a fair bit of hand-waving.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \center{
+        \textbf{Primer:} a gentle (re)introduction to the multi-layer perceptron
+    }
+\end{frame}
+
+\begin{frame}
+    Canonically, a ``shallow'' multi-layer perceptron is \textit{two layers}. (This will be important
+    for the literature!)
+    A multi-layer perceptron in the shallow case is represented as
+    \begin{align*}
+    f &: ~ \R^n \longrightarrow \R \\
+    \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \end{align*}
+    Note the width $N(\varepsilon)$ is a function of the precision $\varepsilon$.
+\end{frame}
+
+\begin{frame}
+    \begin{align*}
+        \hat{f}(x) &=  \sum_i a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \end{align*}
+    where:
+    \[
+        \begin{array}{c|l}
+            b_i & \text{is the bias \textit{(affine!)}} \\
+            \mathbf{x} & \text{is the $i$ th input vector} \\
+            \mathbf{W}_i & \text{is the $i$ th weight matrix \textit{(learned!)}} \\
+            \sigma & \text{is the activation function \textit{(e.g. ReLU, sigmoid, $\tanh$...)}} \\
+            a_i & \text{are elements of the outermost weight matrix}
+        \end{array}
+    \]
+    In the shallow case, $a_i$ can be denoted by a row vector.
+\end{frame}
+\begin{frame}
+    \begin{align*}
+        \hat{f}(x) &=  \sum_i^d a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \end{align*}
+    \ffig{\includegraphics[width=6cm]{shallowmlp}}{\textit{A shallow 2-layer multi-layer perceptron.} $d=2$, $n=2$.}
+\end{frame}
+\begin{frame}
+    \textit{Interesting side note:}
+    more generally, for arbitrarily deep networks, a \textit{multi-layer} perceptron is
+    really just a composition of (affine!) linear transformations separated by non-linear
+    activations.
+    \[
+        MLP(\mathbf{x}) = \left[
+            \mathbf{W}_d \circ \sigma_d \circ
+            \mathbf{W}_{d-1} \circ \sigma_{d-1} \circ
+                \ldots
+            \mathbf{W}_{1} \circ \sigma_{1} \circ
+        \right] (\mathbf{x} )
+    \]
+    \ffig{\includegraphics[width=6cm]{deepmlp}}{\textit{A deep multi-layer perceptron.}}
+\end{frame}
+\begin{frame}
+    \[
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \]
+    \textbf{\textit{Question:}} What can a multi-layer perceptron represent? \\
+    \textbf{\textit{Answer}} Anything!$^*$ \\
+\end{frame}
+\begin{frame}
+    \textbf{\textit{Question:}} What can a multi-layer perceptron represent? \\
+    \textbf{\textit{Answer}} Anything!$^*$ \\
+    \vspace{1cm}
+    Let $D \subset \R^n$ be compact\footnote{\tiny
+        Compact denotes some notion of ``closed and bounded'' -- the $n$-dimensional
+        equivalent of a closed interval $[a, b] \subset \R$.
+    }.
+    $f: D \longrightarrow \R$ be an \textit{arbitrary nonlinear function}, and let $\hat{f}: D \longrightarrow
+    \R$ denote a shallow (\textit{n.b.} 2-layer) multi-layer perceptron, denoted by
+    \[
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \]
+    where $N(\varepsilon)$ is the \textit{number of neurons}. In the shallow case this is $=$ 
+    the width.
+\end{frame}
+\begin{frame}
+    Let $D \subset \R^n$ be compact.
+    $f: D \longrightarrow \R$ be an \textit{arbitrary nonlinear function}, and let $\hat{f}: D \longrightarrow
+    \R$ denote a shallow (\textit{n.b.} 2-layer) multi-layer perceptron, denoted by
+    \[
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \]
+    \begin{theorem}
+        \textbf{Universal approximation (2-layer network).} For arbitrary $\varepsilon \in \R > 0$, there
+        exists $N(\varepsilon)$ such that 
+        \[
+        |f(x) - \hat{f(x)}| \leq \varepsilon
+        \]
+    \end{theorem}
+\end{frame}
+
+\begin{frame}
+    \[
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+    \]
+    \begin{theorem}
+        \textbf{Universal approximation (2-layer network).} For arbitrary $\varepsilon \in \R > 0$, there
+        exists $N(\varepsilon)$ such that 
+        \[
+        |f(x) - \hat{f(x)}| \leq \varepsilon
+        \]
+    \end{theorem}
+    So we can model basically anything! But...
+\end{frame}
+
+\begin{frame}
+    \begin{theorem}
+        \textbf{Universal approximation (2-layer network).} For arbitrary $\varepsilon \in \R > 0$, there
+        exists $N(\varepsilon)$ such that 
+        \[
+        |f(x) - \hat{f(x)}| \leq \varepsilon
+        \]
+    \end{theorem}
+    The million-dollar question:
+    \begin{center}
+        \textbf{What is $N(\varepsilon)$?}
+    \end{center}
+\end{frame}
+\begin{frame}
+    \center{ \textbf{What is $N(\varepsilon)$?} }
+    \\
+    \textbf{We don't know, in general!} The universal approximation theorem guarantees no bounds on $N$. 
+    For deep networks,
+    we do know that it's possibly poorly behaved ($N \propto \exp(d)$, the layer depth of the network).
+\end{frame}
+
+\begin{frame}
+    \textbf{Why does this make sense?} Because we are fitting a ``mostly linear'' model to an ``arbitrary
+    non-linear'' function. We need ``a lot of linear pieces'' to get good at modeling funky nonlinear functions.
+
+    \ffig{
+        \begin{tikzpicture}[yscale=0.3]
+            \begin{scope}
+                \draw[red,thick,->] plot [domain=-3.3:3.3] ({\x}, {\x * \x});
+                % \draw (3, 9) node [above right] (quad) {x^2};
+            \end{scope}
+            \draw[blue, <-] (3, 9) -- (2, 4) -- (1, 1) -- (0, 0) -- (-1, 1) -- (-2, 4) -- (-3, 9);
+            \draw[->] (-4.8, 0) -- (4.8, 0);
+            \draw[->] (0, -1.8) -- (0, 10.8);
+            \draw[step=2cm,very thin,color=gray] (-4.1, -1.1) grid (4.1, 10.1);
+            \draw[--] (-3, 0.3) -- (-3, -0.3) node [below=1mm] {-3};
+            \draw[--] (3, 0.3) -- (3, -0.3) node [below=1mm] {3};
+        \end{tikzpicture}
+    }{\textit{It takes a lot of line segments to approximate this quadratic, and as soon as we leave $[-3, 3]$,
+    the error in our approximation blows up!}}
+
+    Enter the notion of \textit{neural scaling laws}.
+\end{frame}
 
 \end{document}

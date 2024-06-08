@@ -1,0 +1,112 @@
+\documentclass[UTF8]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[normalem]{ulem}
+\usepackage{xeCJK}
+\usepackage{
+    amsmath, amssymb, listings, hyperref,
+    subcaption, float, booktabs, csquotes,
+    enumitem, tikz, pgf, pgfplots, cancel,
+    ulem, fancyhdr, framed, amsthm, mathtools,
+    ifsym
+}
+
+\setCJKmainfont[BoldFont=Songti SC Bold]{Songti SC Regular}
+\setCJKsansfont{Heiti SC}
+\setCJKmonofont{Courier}
+
+\newcommand{\figc}[2]{
+\begin{figure}[H]\begin{center}
+    #1
+    \caption{#2}
+\end{center}\end{figure}
+}
+
+\usetikzlibrary{arrows, automata}
+\AtBeginEnvironment{align}{\setcounter{equation}{0}}
+
+\theoremstyle{plain}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem*{theorem*}{Theorem}
+%\newtheorem{lemma}{Lemma}
+
+
+\theoremstyle{definition}
+\newtheorem*{claim}{Claim}
+\newtheorem{defn}{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+
+\newcommand{\ffig}[2]{
+\begin{figure}[H]\begin{center}
+    #1
+    \caption{#2}
+\end{center}\end{figure}
+}
+\newcommand\m[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand\mc[1]{\mathcal{#1}}
+\newcommand\mb[1]{\mathbf{#1}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+  language=matlab,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=2
+}
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+   \hskip -\arraycolsep
+   \let\@ifnextchar\new@ifnextchar
+   \array{#1}}
+\makeatother
+
+\newcommand*{\bc}{\Leftrightarrow}
+\newcommand*{\then}{\Rightarrow}
+\newcommand*{\st}{~\middle|~}
+
+\newcommand*{\vrbar}{\rule[-1ex]{0.5pt}{2.5ex}}
+\newcommand*{\hrbar}{\rule[.5ex]{2.5ex}{0.5pt}}
+
+\newcommand{\zerodel}{.\kern-\nulldelimiterspace}
+
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\H}{\mathbb{H}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\qedb}{$\blacksquare$}
+\newcommand{\blank}{\textvisiblespace}
+\newcommand{\Mod}{~\mathrm{mod}~}
+
+\DeclareMathOperator{\Cl}{Cl}
+\DeclareMathOperator{\POLY}{P}
+\DeclareMathOperator{\NPOLY}{NP}
+\DeclareMathOperator{\NPOLYC}{NP--Complete}
+\DeclareMathOperator{\CONPOLY}{co--NP}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\rank}{rank}
+\DeclareMathOperator*{\spn}{span}
+\DeclareMathOperator*{\Arg}{Arg}
+\DeclareMathOperator*{\im}{Im}
+\DeclareMathOperator*{\lcm}{lcm}
+\DeclareMathOperator*{\sgn}{sgn}
+
+\DeclarePairedDelimiterX{\inp}[2]{\langle}{\rangle}{#1, #2}
