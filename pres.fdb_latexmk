@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1717860135.57482 "pres.tex" "pres.pdf" "pres" 1717860137.24703 2
+["pdflatex"] 1717865129.79125 "pres.tex" "pres.pdf" "pres" 1717865131.49822 2
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -285,11 +285,11 @@
   "/usr/local/texlive/2024/texmf-var/web2c/xetex/xelatex.fmt" 1717207263 10850174 18bf156ff8aa1d112447fd75a8c2254e ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
   "deepmlp.png" 1717851652.27032 212658 849a8d2056e8359a133abe984db1b7d7 ""
-  "preamble.tex" 1717850806.41935 2730 893a3381fafe7a74d2804fdb447c2acc ""
-  "pres.aux" 1717860137.06909 3056 77833f2704ca74cf796fd081549edfd1 "pdflatex"
-  "pres.nav" 1717860137.06992 1667 223530e0d280496bcaab89de82b2e7ab "pdflatex"
-  "pres.out" 1717860136.65447 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "pres.tex" 1717860134.23023 7796 eb3f7afd6f29336f3115bd14694a4767 ""
+  "preamble.tex" 1717864858.52062 2758 fe6a7114246938b877337857cf8cce2d ""
+  "pres.aux" 1717865131.34048 3227 f758c9222addb2ee671e68a448b16980 "pdflatex"
+  "pres.nav" 1717865131.34133 1760 80a68e95556c790f6368970db289fcf5 "pdflatex"
+  "pres.out" 1717865130.88594 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "pres.tex" 1717865128.06826 8444 80089145d17d67f8c579290756a0eee9 ""
   "shallowmlp.png" 1717853792.50249 79841 f728c5145fefec97f9677bc9be6634cb ""
   (generated)
   "pres.aux"

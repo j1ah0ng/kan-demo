@@ -32,11 +32,11 @@
 \end{frame}
 
 \begin{frame}
-    \textbf{Agenda:}
+    \textbf{On the agenda:}
     \begin{itemize}
-        \item What's a KAN (and what's an MLP)?
-        \item What can a KAN represent?
-        \item Why are KANs interesting?
+        \item MLPs and their limitations
+        \item What KANs do better
+        \item What KANs do worse
     \end{itemize}
 \end{frame}
 
@@ -50,6 +50,8 @@
             \]
         \item Parts of this are intentionally abstract, so as to not get
             into the weeds of technical examples. Expect a fair bit of hand-waving.
+        \item The original paper is on \texttt{ArXiv:2404.19756v1}
+         at \url{https://arxiv.org/pdf/2404.19756v1}.
     \end{itemize}
 \end{frame}
 
@@ -64,15 +66,15 @@
     for the literature!)
     A multi-layer perceptron in the shallow case is represented as
     \begin{align*}
-    f &: ~ \R^n \longrightarrow \R \\
-    \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f} &: ~ \R^n \longrightarrow \R \\
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \end{align*}
     Note the width $N(\varepsilon)$ is a function of the precision $\varepsilon$.
 \end{frame}
 
 \begin{frame}
     \begin{align*}
-        \hat{f}(x) &=  \sum_i a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \end{align*}
     where:
     \[
@@ -81,20 +83,21 @@
             \mathbf{x} & \text{is the $i$ th input vector} \\
             \mathbf{W}_i & \text{is the $i$ th weight matrix \textit{(learned!)}} \\
             \sigma & \text{is the activation function \textit{(e.g. ReLU, sigmoid, $\tanh$...)}} \\
-            a_i & \text{are elements of the outermost weight matrix}
+            a_i & \text{are elements of the outermost weight matrix} \\
+            N(\varepsilon) & \text{is the number of neurons}
         \end{array}
     \]
     In the shallow case, $a_i$ can be denoted by a row vector.
 \end{frame}
 \begin{frame}
     \begin{align*}
-        \hat{f}(x) &=  \sum_i^d a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \end{align*}
-    \ffig{\includegraphics[width=6cm]{shallowmlp}}{\textit{A shallow 2-layer multi-layer perceptron.} $d=2$, $n=2$.}
+    \ffig{\includegraphics[width=6cm]{shallowmlp}}{\textit{A shallow 2-layer multi-layer perceptron.} $d=2$, $n=5$.}
 \end{frame}
 \begin{frame}
     \textit{Interesting side note:}
-    more generally, for arbitrarily deep networks, a \textit{multi-layer} perceptron is
+    more generally, for deep ($d > 2$) networks, a multi-layer perceptron is
     really just a composition of (affine!) linear transformations separated by non-linear
     activations.
     \[
@@ -102,14 +105,14 @@
             \mathbf{W}_d \circ \sigma_d \circ
             \mathbf{W}_{d-1} \circ \sigma_{d-1} \circ
                 \ldots
-            \mathbf{W}_{1} \circ \sigma_{1} \circ
+            \mathbf{W}_{1} \circ \sigma_{1} 
         \right] (\mathbf{x} )
     \]
     \ffig{\includegraphics[width=6cm]{deepmlp}}{\textit{A deep multi-layer perceptron.}}
 \end{frame}
 \begin{frame}
     \[
-        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f}(x) =  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \]
     \textbf{\textit{Question:}} What can a multi-layer perceptron represent? \\
     \textbf{\textit{Answer}} Anything!$^*$ \\
@@ -125,7 +128,7 @@
     $f: D \longrightarrow \R$ be an \textit{arbitrary nonlinear function}, and let $\hat{f}: D \longrightarrow
     \R$ denote a shallow (\textit{n.b.} 2-layer) multi-layer perceptron, denoted by
     \[
-        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f}(x) =  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \]
     where $N(\varepsilon)$ is the \textit{number of neurons}. In the shallow case this is $=$ 
     the width.
@@ -135,7 +138,7 @@
     $f: D \longrightarrow \R$ be an \textit{arbitrary nonlinear function}, and let $\hat{f}: D \longrightarrow
     \R$ denote a shallow (\textit{n.b.} 2-layer) multi-layer perceptron, denoted by
     \[
-        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f}(x) =  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \]
     \begin{theorem}
         \textbf{Universal approximation (2-layer network).} For arbitrary $\varepsilon \in \R > 0$, there
@@ -148,7 +151,7 @@
 
 \begin{frame}
     \[
-        \hat{f}(x) &=  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
+        \hat{f}(x) =  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \]
     \begin{theorem}
         \textbf{Universal approximation (2-layer network).} For arbitrary $\varepsilon \in \R > 0$, there
@@ -197,11 +200,23 @@
             \draw[step=2cm,very thin,color=gray] (-4.1, -1.1) grid (4.1, 10.1);
             \draw[--] (-3, 0.3) -- (-3, -0.3) node [below=1mm] {-3};
             \draw[--] (3, 0.3) -- (3, -0.3) node [below=1mm] {3};
+            \draw (3, 9) node [above,right=2mm,fill=white] (quad) {$f = x^2$};
         \end{tikzpicture}
     }{\textit{It takes a lot of line segments to approximate this quadratic, and as soon as we leave $[-3, 3]$,
     the error in our approximation blows up!}}
 
     Enter the notion of \textit{neural scaling laws}.
+\end{frame}
+
+\begin{frame}
+    Neural scaling laws formalize the notion of ``mostly linear things approximate nonlinearities inefficiently'' --
+    we can generally say that the \textit{training}\footnote{
+        i.e. overfits
+    } loss $\ell$ decreases according to 
+    \[
+        \ell \propto N^{-\alpha}
+    \]
+    where $\alpha$ is the \textit{scaling exponent}. 
 \end{frame}
 
 \end{document}
