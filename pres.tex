@@ -1,5 +1,18 @@
 \input{./preamble.tex}
 
+\usetheme{Madrid}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
 \pgfplotsset{every axis/.append style={
                     axis x line=middle,    % put the x axis in the middle
                     axis y line=middle,    % put the y axis in the middle
@@ -9,56 +22,49 @@
                     }}
 
 \usefonttheme{serif}
-\title{\bf Kolmogorov-Arnold Networks}
-\author{jiahong.long@}
-\institute{Cruise $\cdot$ UC San Diego}
+\title{Kolmogorov-Arnold Networks}
+\author{jhl}
+\institute[]{@c/sim-aaa $\cdot$ @ucsd}
 \date{10 June 2024}
 
 \begin{document}
 
-\frame{\titlepage}
-
-\begin{frame}
-    \center{\textbf{
-        Welcome to the inaugural Sim-Eval literature review!
-    }}
-    \center{
-        I'm trying to keep this informal -- teaching is the best way of learning,
-        and we all benefit from sharing knowledge. 
-    }
-    \center{
-        My background is in math, so expect a bit more of the underlying theory here!
-    }
+{
+\setbeamertemplate{footline}{} 
+\begin{frame}{}
+    {\center Sim-Eval Literature Review}
+    \titlepage
 \end{frame}
+}
 
-\begin{frame}
-    \textbf{On the agenda:}
-    \begin{itemize}
-        \item MLPs and their limitations
-        \item What KANs do better
-        \item What KANs do worse
-    \end{itemize}
-\end{frame}
+\addtocounter{framenumber}{-1}
 
-\begin{frame}
-    Some bookkeeping notes:
+\begin{frame}{Welcome to the inaugural Sim-Eval literature review!} 
+    I'm trying to keep this informal -- teaching is the best way of learning,
+    and we all benefit from sharing knowledge. (I also only had a weekend to prepare.) 
+    \textbf{Some bookkeeping notes:}
     \begin{itemize}
+        \item Expect a bit more of the underlying intuition here, instead of the mechanical
+            $\varepsilon-\delta|_{n \to \infty}$ aspects of the proofs.
         \item For simplicity, assume that the functions we care about are
-            \textit{scalar-valued} and \textit{of multiple variables}, i.e. 
+            \textit{of multiple variables} and \textit{scalar-valued}, i.e. 
             \[
                 f: \R^n \longrightarrow \R
             \]
-        \item Parts of this are intentionally abstract, so as to not get
-            into the weeds of technical examples. Expect a fair bit of hand-waving.
-        \item The original paper is on \texttt{ArXiv:2404.19756v1}
+        \item This talk is motivated by a recent paper by Liu, Wang et al. It is accessible
          at \url{https://arxiv.org/pdf/2404.19756v1}.
     \end{itemize}
 \end{frame}
 
+\section{A gentle (re)introduction to the multi-layer perceptron}
+
 \begin{frame}
-    \center{
-        \textbf{Primer:} a gentle (re)introduction to the multi-layer perceptron
-    }
+
+    The multi-layer perceptron (MLP) is the fundamental building block of
+    so-called deep neural networks. Deep refers to the large ``depth'' of the network, i.e. 
+    the number of layers.
+
+    \ffig{\includegraphics[width=6cm]{deepmlp}}{\textit{A deep multi-layer perceptron network.}}
 \end{frame}
 
 \begin{frame}
@@ -96,8 +102,7 @@
     \ffig{\includegraphics[width=6cm]{shallowmlp}}{\textit{A shallow 2-layer multi-layer perceptron.} $d=2$, $n=5$.}
 \end{frame}
 \begin{frame}
-    \textit{Interesting side note:}
-    more generally, for deep ($d > 2$) networks, a multi-layer perceptron is
+    More generally, for deep ($d > 2$) networks, a multi-layer perceptron is
     really just a composition of (affine!) linear transformations separated by non-linear
     activations.
     \[
@@ -108,15 +113,19 @@
             \mathbf{W}_{1} \circ \sigma_{1} 
         \right] (\mathbf{x} )
     \]
-    \ffig{\includegraphics[width=6cm]{deepmlp}}{\textit{A deep multi-layer perceptron.}}
+    \ffig{\includegraphics[width=6cm]{deepmlp}}{\textit{A deep multi-layer perceptron network.}}
 \end{frame}
+
 \begin{frame}
     \[
         \hat{f}(x) =  \sum_i^{N(\varepsilon)} a_i \sigma \left[\mathbf{W}_i \mathbf{x} + b_i \right]
     \]
     \textbf{\textit{Question:}} What can a multi-layer perceptron represent? \\
-    \textbf{\textit{Answer}} Anything!$^*$ \\
+    \ffig{\includegraphics[width=6cm]{shallowmlp}}{\textit{A shallow 2-layer multi-layer perceptron.} $d=2$, $n=5$.}
 \end{frame}
+
+\section{Universal Approximation}
+
 \begin{frame}
     \textbf{\textit{Question:}} What can a multi-layer perceptron represent? \\
     \textbf{\textit{Answer}} Anything!$^*$ \\
@@ -171,13 +180,15 @@
         |f(x) - \hat{f(x)}| \leq \varepsilon
         \]
     \end{theorem}
-    The million-dollar question:
+    ...the practical question is:
     \begin{center}
         \textbf{What is $N(\varepsilon)$?}
     \end{center}
+    Is it $O(\log \varepsilon^{-1})$? $O(\varepsilon^{-1})$? $O(\exp \varepsilon^{-1})$?
 \end{frame}
+\section{Neural scaling}
 \begin{frame}
-    \center{ \textbf{What is $N(\varepsilon)$?} }
+    \textbf{What is $N(\varepsilon)$?}
     \\
     \textbf{We don't know, in general!} The universal approximation theorem guarantees no bounds on $N$. 
     For deep networks,
@@ -210,13 +221,143 @@
 
 \begin{frame}
     Neural scaling laws formalize the notion of ``mostly linear things approximate nonlinearities inefficiently'' --
-    we can generally say that the \textit{training}\footnote{
+    in particular, we can generally say that the \textit{training}\footnote{
         i.e. overfits
-    } loss $\ell$ decreases according to 
+    } loss $\ell$ decreases according a power-law regime:
     \[
         \ell \propto N^{-\alpha}
     \]
-    where $\alpha$ is the \textit{scaling exponent}. 
+    where $\alpha$ is the \textit{scaling exponent} and $N$ is the number of parameters. In essence,
+    to decrease the loss linearly requires an exponential increase in the number of parameters.
+\end{frame}
+
+\begin{frame}
+    In essence, to decrease the loss linearly requires an exponential increase in the number of parameters. \\
+
+    Fundamentally, if the underlying process is nonlinear, then we are basically trying to fit a big piecewise
+    linear function, and then combining them with a fixed nonlinearity (ReLU, sigmoid, tanh, \&c).
+    \ffig{\includegraphics[width=6cm]{shallowmlp}}{\textit{The shallow perceptron again.} The nodes
+        apply a fixed nonlinear activation to each input, which is a learned affine linear function
+        over the incoming edges.
+    }
+\end{frame}
+
+\begin{frame}
+    \textbf{A practical example}: \url{go/tensorflowplayground}
+    \ffig{\includegraphics[width=9cm]{tfspiral}}{\textit{Separating linearly inseparable data, with linear functions?}}
+\end{frame}
+
+\begin{frame}
+    \textbf{Idea:} Why not \textit{learn the nonlinearity}? \\
+    \vspace{5mm}
+    Using linear piecewise bits to represent a nonlinear function seems impractical. Besides, we already
+    use nonlinear basis functions to fit models (e.g. polynomial degree-$n$ regression, exponential
+    regression, spline fitting). \\
+    \vspace{5mm}
+    This is the basic idea behind the Kolmogorov-Arnold network.
+\end{frame}
+
+\section{Kolmogorov-Arnold Networks}
+
+\begin{frame}
+    The fundamental architectural difference (other than learning the nonlinear
+    `activation') between the multi-layer perceptron and the Kolmogorov-Arnold
+    network is that nodes and edges are flipped:
+    \ffig{\includegraphics[width=12cm]{mlpvskan}}{\textit{MLP (right) vs. KAN (left) in the shallow case.}}
+    Both of these are two-layer architectures. 
+\end{frame}
+
+\section{Kolmogorov-Arnold Representation}
+
+\begin{frame}
+    The multi-layer perceptron was underpinned by the Universal Approximation theorem. The Kolmogorov-Arnold network is
+    similarly underpinned by the Kolmogorov-Arnold representation theorem (surprise). 
+    Let $f$ be a continuous function defined on a closed hypercube, i.e. $f : [0,1]^n \subset \R^n \longrightarrow \R$.
+    \begin{theorem}
+        \textbf{Kolmogorov-Arnold representation.} $f$ admits a representation that is the sum of continuous
+        functions of a single variable. In particular: there exist $\phi_{q, p} : [0, 1] \longrightarrow \R$
+        and $\Phi_q: \R \longrightarrow \R$ where
+        \[
+            f(x) = f(x_1, x_2, \ldots x_n) = \sum_{q=0}^{2n} \Phi_q \left(
+                \sum_{p=1}^n \phi_{q, p} (x_p)
+                \right)
+        \]
+    \end{theorem}
+\end{frame}
+
+\begin{frame}
+    \begin{theorem}
+        \textbf{Kolmogorov-Arnold representation.} $f$ admits a representation that is the sum of continuous
+        functions of a single variable. In particular: there exist $\phi_{q, p} : [0, 1] \longrightarrow \R$
+        and $\Phi_q: \R \longrightarrow \R$ where
+        \[
+            f(x) = f(x_1, x_2, \ldots x_n) = \sum_{q=0}^{2n} \Phi_q \left(
+                \sum_{p=1}^n \phi_{q, p} (x_p)
+                \right)
+        \]
+    \end{theorem}
+    Well that's abstract and unhelpful! What does it mean?
+\end{frame}
+
+\begin{frame}
+    Rather surprisingly, it tells us that \textit{every multivariable function defined on a compact set
+    can be written with a collection of univariate functions, composed and added together}! This is a pretty 
+    remarkable result:
+    \begin{align*}
+        & x \in [0, 1]^n \implies \\
+        & \qquad \underbrace{f(x) = f(x_1, x_2, \ldots x_n)}_{\text{multivariate}}
+        = \sum_{q=0}^{2n} \underbrace{\Phi_q}_{\text{univariate}} \left(
+            \sum_{p=1}^n \underbrace{\phi_{q, p}}_{\text{univariate}} (x_p)
+            \right)
+    \end{align*}
+\end{frame}
+
+\begin{frame}
+    \begin{align*}
+        & x \in [0, 1]^n \implies \\
+        & \qquad \underbrace{f(x) = f(x_1, x_2, \ldots x_n)}_{\text{multivariate}}
+        = \sum_{q=0}^{2n} \underbrace{\Phi_q}_{\text{univariate}} \left(
+            \sum_{p=1}^n \underbrace{\phi_{q, p}}_{\text{univariate}} (x_p)
+            \right)
+    \end{align*}
+    There is a catch: we have no guarantees on how nicely-behaved these univariate functions are.
+    It could well be the case that our $\phi, \Phi$ are nondifferentiable or even fractal.
+\end{frame}
+
+\begin{frame}
+    Fortunately, in practice, (it turns out) if you're modeling a real-life process, the odds are good that they will be 
+    (reasonably) well-behaved. \\
+    \vspace{5mm}
+    In addition, (in much the same way as a deep MLP network,) we can stack layers of these KAN networks together.
+    \ffig{\includegraphics[width=6cm]{deepkan}}{\textit{A deep KAN.}}
+\end{frame}
+
+\begin{frame}
+    \ffig{\includegraphics[width=6cm]{deepkan}}{\textit{A deep KAN.}}
+    Empirically, it turns out these have high approximating power (among other benefits!).
+    A deep KAN admits a very simple representation:
+    \[
+        \text{KAN}(x) = (\phi_n \circ \phi_{n-1} \circ \ldots \circ \phi_1)(x)
+    \]
+    Compare to the deep MLP formulation:
+    \[
+        MLP(\mathbf{x}) = \left[
+            \mathbf{W}_d \circ \sigma_d \circ
+            \mathbf{W}_{d-1} \circ \sigma_{d-1} \circ
+                \ldots
+            \mathbf{W}_{1} \circ \sigma_{1} 
+        \right] (\mathbf{x} )
+    \]
+\end{frame}
+
+\begin{frame}
+    From the previous discussion about neural scaling, we might expect a KAN to
+    be \textit{more efficient} at representing nonlinear processes than a deep MLP.
+    \\ \vspace{5mm}
+    \textbf{Is this true?}
+\end{frame}
+
+\begin{frame}
 \end{frame}
 
 \end{document}
