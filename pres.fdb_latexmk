@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1717967782.84842 "pres.tex" "pres.pdf" "pres" 1717967785.56059 2
+["pdflatex"] 1718006305.54886 "pres.tex" "pres.pdf" "pres" 1718006309.13327 2
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -291,13 +291,17 @@
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
   "deepkan.png" 1717900606.33567 67843 96824ab0fe6c6632e51ae19bcce59d12 ""
   "deepmlp.png" 1717851652.27032 212658 849a8d2056e8359a133abe984db1b7d7 ""
+  "flow.png" 1718006275.47822 331514 84941afb8c7d0278d09c30e88ff6a36e ""
   "mlpvskan.png" 1717884683.55164 115175 589a682a3bf25bf5cc641068022af916 ""
   "preamble.tex" 1717864858.52062 2758 fe6a7114246938b877337857cf8cce2d ""
-  "pres.aux" 1717967785.34754 7400 ccaef8b4f9d6e6d04eb4629f1d6dfd9d "pdflatex"
-  "pres.nav" 1717967785.34864 4110 f3496c3d4658eefa27c26f29b2aa7806 "pdflatex"
-  "pres.out" 1717967785.34841 1001 cde9b6e4b185a14e9fb77a6ec5fb667e "pdflatex"
-  "pres.tex" 1717967782.47545 14602 6564e40effcaef8fea7658d232f4f228 ""
+  "pres.aux" 1718006308.20486 8807 af62ab767dd3f5ba14481b2d347d1bbe "pdflatex"
+  "pres.nav" 1718006308.20603 4880 eea36af70fe4d3d94c27a8fe30ded61b "pdflatex"
+  "pres.out" 1718006308.20582 1084 c52985958f13bd437da19d80cfa2ab4e "pdflatex"
+  "pres.tex" 1718006305.38126 18699 3689e74ef33f3bce202121ecbd368384 ""
+  "reg.png" 1718006053.39053 152820 ad2d89700e0f1c60c298c4de6a08e3ce ""
+  "scaling.png" 1718003188.34998 247585 6251de5e5c86f8c1076cc2d8002c82bd ""
   "shallowmlp.png" 1717853792.50249 79841 f728c5145fefec97f9677bc9be6634cb ""
+  "splines.png" 1718005501.66804 257179 86ee5dfe0f093290da52be8987a62e73 ""
   "tfspiral.png" 1717882259.3276 420988 566e068500b19e3c601de9f075da01a4 ""
   (generated)
   "pres.aux"

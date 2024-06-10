@@ -1,5 +1,5 @@
 \beamer@sectionintoc {1}{A gentle (re)introduction to the multi-layer perceptron}{3}{0}{1}
 \beamer@sectionintoc {2}{Universal Approximation}{10}{0}{2}
 \beamer@sectionintoc {3}{Neural scaling}{15}{0}{3}
-\beamer@sectionintoc {4}{Kolmogorov-Arnold Networks}{22}{0}{4}
-\beamer@sectionintoc {5}{Kolmogorov-Arnold Representation}{24}{0}{5}
+\beamer@sectionintoc {4}{Kolmogorov-Arnold representation}{22}{0}{4}
+\beamer@sectionintoc {5}{Why are we only hearing about KANs now?}{39}{0}{5}

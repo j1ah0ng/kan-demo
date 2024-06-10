@@ -52,7 +52,8 @@
                 f: \R^n \longrightarrow \R
             \]
         \item This talk is motivated by a recent paper by Liu, Wang et al. It is accessible
-         at \url{https://arxiv.org/pdf/2404.19756v1}.
+         at \url{https://arxiv.org/pdf/2404.19756v1}. Unless otherwise stated, 
+         figures are credited to Liu et al.
     \end{itemize}
 \end{frame}
 
@@ -106,12 +107,12 @@
     really just a composition of (affine!) linear transformations separated by non-linear
     activations.
     \[
-        MLP(\mathbf{x}) = \left[
-            \mathbf{W}_d \circ \sigma_d \circ
-            \mathbf{W}_{d-1} \circ \sigma_{d-1} \circ
+        MLP(x) = \left[
+            W_d \circ \sigma_d \circ
+            W_{d-1} \circ \sigma_{d-1} \circ
                 \ldots
-            \mathbf{W}_{1} \circ \sigma_{1} 
-        \right] (\mathbf{x} )
+            W_{1} \circ \sigma_{1} 
+        \right] (x)
     \]
     \ffig{\includegraphics[width=6cm]{deepmlp}}{\textit{A deep multi-layer perceptron network.}}
 \end{frame}
@@ -201,19 +202,19 @@
 
     \ffig{
         \begin{tikzpicture}[yscale=0.3]
-            \begin{scope}
-                \draw[red,thick,->] plot [domain=-3.3:3.3] ({\x}, {\x * \x});
-                % \draw (3, 9) node [above right] (quad) {x^2};
-            \end{scope}
-            \draw[blue, <-] (3, 9) -- (2, 4) -- (1, 1) -- (0, 0) -- (-1, 1) -- (-2, 4) -- (-3, 9);
-            \draw[->] (-4.8, 0) -- (4.8, 0);
-            \draw[->] (0, -1.8) -- (0, 10.8);
-            \draw[step=2cm,very thin,color=gray] (-4.1, -1.1) grid (4.1, 10.1);
+            \draw[thick,->] (-4.8, 0) -- (4.8, 0);
+            \draw[thick,->] (0, -1.8) -- (0, 13.8);
+            \draw[step=2cm,very thin,color=gray] (-4.6, -1.1) grid (4.6, 12.1);
             \draw[--] (-3, 0.3) -- (-3, -0.3) node [below=1mm] {-3};
             \draw[--] (3, 0.3) -- (3, -0.3) node [below=1mm] {3};
-            \draw (3, 9) node [above,right=2mm,fill=white] (quad) {$f = x^2$};
+            \draw (3.7, 14) node [below=2mm,right=1mm,fill=white,text=red] (quad) {$f = x^2$};
+            \draw (3.5, 11.5) node [below=4mm,right=1mm,fill=white,text=blue] (quad) {$\hat{f} \approx x^2$};
+            \begin{scope}
+                \draw[red,thick,->] plot [domain=-3.7:3.7] ({\x}, {\x * \x});
+            \end{scope}
+            \draw[blue, <-] (3.5, 11.5) -- (3, 9) -- (2, 4) -- (1, 1) -- (0, 0) -- (-1, 1) -- (-2, 4) -- (-3, 9) -- (-3.5, 11.5);
         \end{tikzpicture}
-    }{\textit{It takes a lot of line segments to approximate this quadratic, and as soon as we leave $[-3, 3]$,
+    }{\textit{It takes a lot of line segments to approximate this quadratic on $[-3, 3]$, and as soon as we leave $[-3, 3]$,
     the error in our approximation blows up!}}
 
     Enter the notion of \textit{neural scaling laws}.
@@ -257,7 +258,7 @@
     This is the basic idea behind the Kolmogorov-Arnold network.
 \end{frame}
 
-\section{Kolmogorov-Arnold Networks}
+\section{Kolmogorov-Arnold representation}
 
 \begin{frame}
     The fundamental architectural difference (other than learning the nonlinear
@@ -266,8 +267,6 @@
     \ffig{\includegraphics[width=12cm]{mlpvskan}}{\textit{MLP (right) vs. KAN (left) in the shallow case.}}
     Both of these are two-layer architectures. 
 \end{frame}
-
-\section{Kolmogorov-Arnold Representation}
 
 \begin{frame}
     The multi-layer perceptron was underpinned by the Universal Approximation theorem. The Kolmogorov-Arnold network is
@@ -326,9 +325,19 @@
 
 \begin{frame}
     Fortunately, in practice, (it turns out) if you're modeling a real-life process, the odds are good that they will be 
-    (reasonably) well-behaved. \\
-    \vspace{5mm}
-    In addition, (in much the same way as a deep MLP network,) we can stack layers of these KAN networks together.
+    (reasonably) well-behaved. Training \textit{B-splines} turns out to be effective.\\
+    \begin{defn}
+        A B-spline of order $n$ is a \emph{piecewise polynomial} function of degree $n - 1$; the points
+        where they meet are called \emph{knots}. It has derivatives continuous up to the degree\footnote{
+            if all knots are distinct.
+        } $n - 1$. B-splines can smoothly approximate any function on a compact domain to within arbitrary precision
+        by interpolating between knots.
+    \end{defn}
+\end{frame}
+\begin{frame}
+    In addition, the KA theorem only discusses the shallow (2-layer) case. In
+    much the same way as a deep MLP network, we can stack layers of these KAN
+    networks together.
     \ffig{\includegraphics[width=6cm]{deepkan}}{\textit{A deep KAN.}}
 \end{frame}
 
@@ -337,16 +346,16 @@
     Empirically, it turns out these have high approximating power (among other benefits!).
     A deep KAN admits a very simple representation:
     \[
-        \text{KAN}(x) = (\phi_n \circ \phi_{n-1} \circ \ldots \circ \phi_1)(x)
+        \text{KAN}(x) = (\phi_d \circ \phi_{d-1} \circ \ldots \circ \phi_1)(x)
     \]
     Compare to the deep MLP formulation:
     \[
-        MLP(\mathbf{x}) = \left[
-            \mathbf{W}_d \circ \sigma_d \circ
-            \mathbf{W}_{d-1} \circ \sigma_{d-1} \circ
+        MLP(x) = \left[
+            W_d \circ \sigma_d \circ
+            W_{d-1} \circ \sigma_{d-1} \circ
                 \ldots
-            \mathbf{W}_{1} \circ \sigma_{1} 
-        \right] (\mathbf{x} )
+            W_{1} \circ \sigma_{1} 
+        \right] (x )
     \]
 \end{frame}
 
@@ -358,6 +367,67 @@
 \end{frame}
 
 \begin{frame}
+    \textbf{Yes!} 
+    \ffig{\includegraphics[width=10cm]{scaling}}{\textit{Comparison of RMSE vs. number of parameters in the KAN and MLP case.}}
+    But why? (Dense theorem incoming.)
 \end{frame}
 
+\begin{frame}
+    \begin{theorem}
+        \textbf{Kolmogorov-Arnold, assuming continuity.} Let $x = (x_1, x_2, \ldots x_n)$, and suppose $f(x)$ admits
+        a deep KA representation
+        \[
+        f = (\phi_{d} \circ \phi_{d - 1} \circ \ldots \phi_1)(x)
+        \]
+        where $\phi_k = \sum_{i = 1}^{n_k} \varphi_{z(k, i)}(x_i)$, and each $\varphi_z$ is \textbf{$k+1$ times continuously differentiable.}
+        Then each $\varphi$ can be written as a sum of univariate order-K
+        B-splines, and there exists $C \in \R_{\geq0}$ depending on $f$ and its
+        representation that for any $0 \leq m \leq k$
+        \[
+            ||f - (\phi_{d}^G \circ \phi_{d-1}^G \circ \ldots \phi_1^G)||_{C^m} \leq CG^{-k-1+m}
+        \]
+        where $G$ is the number of knots. $|| g ||_{C^m}$ is the derivative norm equal to $\max_{|\beta| \leq m} \sup_{x \in [0, 1]^n} |D^\beta g |$.
+    \end{theorem}
+\end{frame}
+
+\begin{frame}
+    \[
+        ||f - (\phi_{d}^G \circ \phi_{d-1}^G \circ \ldots \phi_1^G)||_{C^m} \leq CG^{-k-1+m}
+    \]
+    This implies that the error between a deep KAN and the underlying function is \emph{independent of dimension}. 
+    KANs are \emph{free from curse of dimensionality} -- we can therefore expect (and in fact see!) better neural scaling laws. 
+    \ffig{\includegraphics[width=8cm]{scaling}}{\textit{Comparison of RMSE vs. number of parameters in the KAN and MLP case.}}
+\end{frame}
+\begin{frame}
+    \[
+        ||f - (\phi_{d}^G \circ \phi_{d-1}^G \circ \ldots \phi_1^G)||_{C^m} \leq C\overbrace{G^{-(k+1)+m}}
+    \]
+    Further, it implies we can \textit{fine-tune the univariate representations}\footnote{
+    I coin the term `eigenfeatures', but Liu et al. refer to this process as `grid extension'.}
+    by increasing $G$, the number of knots, without touching the dimensionality\footnote{dimensionality, broadly, is layer or feature width} of the model!
+\end{frame}
+\begin{frame}
+    What does a learned spline look like? It turns out they look quite intuitive:
+    \ffig{\includegraphics[width=10cm]{splines}}{\textit{Visualization of KANs trained on some input functions.}}
+\end{frame}
+\begin{frame}
+    Note also that the shape of these KANs correspond quite well to the structure of the input function.
+    \ffig{\includegraphics[width=10cm]{splines}}{\textit{Visualization of KANs trained on some input functions.}}
+\end{frame}
+\begin{frame}
+    With a bit of regularization/sparsification in the objective function, 
+    KANs can be trained to prune themselves down to a minimal depth and breadth, to the point that
+    you can almost elicit an analytical function from the shape of the KAN. \\
+    \ffig{\includegraphics[width=2cm]{reg}}{\textit{Pruned KAN.}}
+    There are a lot of really cool knot theoretic and physics-based examples in 
+    the original paper, which I encourage you to peruse.
+\end{frame}
+
+\section{Why are we only hearing about KANs now?}
+\begin{frame}
+    There has been previous work on the application of Kolmogorov-Arnold to neural networks,
+    but much of it predates modern concepts (like backpropagation and other efficient
+    gradient methods). KAN training is also far more involved than MLP training. 
+    \ffig{\includegraphics[width=10cm]{flow}}{\textit{Fun figure from Liu et al.}}
+\end{frame}
 \end{document}
